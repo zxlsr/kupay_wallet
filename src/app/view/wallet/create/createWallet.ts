@@ -109,6 +109,9 @@ export class CreateWallet extends Widget {
         this.paint();
     }
     public async createClick() {
+        if (!this.state.userProtocolReaded) {
+            return;
+        }
         if (!walletNameAvailable(this.state.walletName)) {
             popNew('app-components1-message-message', { content: this.language.tips[0] });
             
@@ -127,11 +130,6 @@ export class CreateWallet extends Widget {
         if (!this.state.pswEqualed) {
             popNew('app-components1-message-message', { content: this.language.tips[3] });
             
-            return;
-        }
-        if (!this.state.userProtocolReaded) {
-            popNew('app-components1-message-message', { content: this.language.tips[5] });
-
             return;
         }
         const option:any = {
