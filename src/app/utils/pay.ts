@@ -75,13 +75,10 @@ export const checkOrder = (order:OrderDetail):boolean => {
  */
 export const jumpPay = (order,okCb?:Function,failCb?:Function) => {
     const payIframe = document.createElement('iframe');
-    // tslint:disable-next-line:max-line-length
     payIframe.setAttribute('sandbox','allow-scripts allow-top-navigation');
     payIframe.setAttribute('src',JSON.parse(order.JsData).mweb_url);
     payIframe.setAttribute('style','position:absolute;width:0px;height:0px;visibility:hidden;');
     document.body.appendChild(payIframe);
-    // tslint:disable-next-line:max-line-length
-    // window.open('https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx28094712012894726428c3495256989632&package=3109440715&redirect_url=http%3a%2f%2fwxpay.wxutil.com%2fmch%2fpay%2fh5jumppage.php');
     const popClose =  popNew('app-components1-modalBox-modalBox', {
         title: '',
         content: { zh_Hans:'请确认支付是否已完成？',zh_Hant:'请确认支付是否已完成？',en:'' },
@@ -92,8 +89,8 @@ export const jumpPay = (order,okCb?:Function,failCb?:Function) => {
         document.body.removeChild(payIframe);
         okCb && okCb();    
     },() => {
-        document.body.removeChild(payIframe);
         popClose.callback(popClose.widget);
+        document.body.removeChild(payIframe);
         jumpPay(order);
     });
 };
