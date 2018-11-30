@@ -7,7 +7,7 @@ import { popNew } from '../../../../pi/ui/root';
 import { getLang } from '../../../../pi/util/lang';
 import { debug } from '../../../../pi/util/log';
 import { Widget } from '../../../../pi/widget/widget';
-import { openPayment } from '../../../api/JSAPI';
+import { getOpenId, openPayment } from '../../../api/JSAPI';
 import { getGlodPrice, requestAsync } from '../../../net/pull';
 import { confirmPay,OrderDetail } from '../../../utils/pay';
 import { getUserInfo, hasWallet, popNewMessage } from '../../../utils/tools';
