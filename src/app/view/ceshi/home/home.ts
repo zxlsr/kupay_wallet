@@ -9,7 +9,7 @@ import { debug } from '../../../../pi/util/log';
 import { Widget } from '../../../../pi/widget/widget';
 import { getOpenId, openPayment } from '../../../api/JSAPI';
 import { getGlodPrice, requestAsync } from '../../../net/pull';
-import { confirmPay,OrderDetail } from '../../../utils/pay';
+import { confirmPay,OrderDetail, queryPayState } from '../../../utils/pay';
 import { getUserInfo, hasWallet, popNewMessage } from '../../../utils/tools';
 // import { closePayment, confirmOrder, getOpenId, openPayment, openPswInput } from '../../../api/JSAPI';
 // import { confirmPay } from '../../../utils/pay';
@@ -61,7 +61,7 @@ export class Ceshi extends Widget {
     /**
      * 充值按钮
      */
-    public rechargeBtn() {
+    public rechargeBtn(e:any) {
         getGlodPrice();
         const order:OrderDetail = {
             total:Number(document.getElementById('total').value),
@@ -69,8 +69,12 @@ export class Ceshi extends Widget {
             body:document.getElementById('body').value,
             payTypeId:Number(document.getElementById('payType').value)
         };
-        confirmPay(order,() => {
-            popNew('app-components1-message-message', { content:'充值成功' });
+        confirmPay(order,(res) => {
+            queryPayState(res,() => {
+                popNew('app-components1-message-message', { content:'充值成功' });
+            },(err) => {
+                popNew('app-components1-message-message', { content:'充值失败，请重试' });
+            });
             
         },(err) => {
             console.log(err);

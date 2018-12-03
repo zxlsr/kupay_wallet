@@ -79,30 +79,30 @@ export const jumpPay = (order,okCb?:Function,failCb?:Function) => {
     payIframe.setAttribute('src',JSON.parse(order.JsData).mweb_url);
     payIframe.setAttribute('style','position:absolute;width:0px;height:0px;visibility:hidden;');
     document.body.appendChild(payIframe);
-    const popClose =  popNew('app-components1-modalBox-modalBox', {
-        title: '',
-        content: { zh_Hans:'请确认支付是否已完成？',zh_Hant:'请确认支付是否已完成？',en:'' },
-        style: 'color:#F7931A;',
-        sureText: { zh_Hans:'支付成功',zh_Hant:'支付成功',en:'' },
-        cancelText: { zh_Hans:'重新支付',zh_Hant:'重新支付',en:'' }
-    },() => {
+    setTimeout(() => {
         document.body.removeChild(payIframe);
-        okCb && okCb();    
-    },() => {
-        popClose.callback(popClose.widget);
-        document.body.removeChild(payIframe);
-        jumpPay(order);
-    });
+        popNew('app-components1-modalBox-modalBox', {
+            title: '',
+            content: { zh_Hans:'请确认支付是否已完成？',zh_Hant:'请确认支付是否已完成？',en:'' },
+            style: 'color:#F7931A;',
+            sureText: { zh_Hans:'支付成功',zh_Hant:'支付成功',en:'' },
+            cancelText: { zh_Hans:'重新支付',zh_Hant:'重新支付',en:'' }
+        },() => {
+            queryPayState(order.oid,okCb,failCb);
+        },() => {
+            jumpPay(order);
+        });
+    }, 1000);
 };
 
 /**
  * 查询订单支付状态
- * @param data 查询订单号
+ * @param oid 查询订单号
  * @param okCb 成功回调
  * @param failCb 失败回调
  */
-export const queryPayState = async (data,okCb?:Function,failCb?:Function) => {
-    const msg = { type: 'query_pay_state', param: data };
+export const queryPayState = async (oid:string,okCb?:Function,failCb?:Function) => {
+    const msg = { type: 'order_query', param: { oid } };
     try {
         const resData:any = await requestAsync(msg);
         if (resData.result === 1) {
@@ -111,7 +111,7 @@ export const queryPayState = async (data,okCb?:Function,failCb?:Function) => {
             failCb && failCb(resData);
         }
     } catch (err) {
-        console.log('query_pay_state--------',err);
+        console.log('order_query--------',err);
         failCb && failCb(err);
     }
 };
